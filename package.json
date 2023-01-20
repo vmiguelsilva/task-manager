@@ -1,8 +1,8 @@
 {
   "name": "task-manager",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Task manager",
+  "author": "Vinicius Miguel <vini.miguel1994@gmail.com",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
