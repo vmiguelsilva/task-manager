@@ -3,6 +3,7 @@ import { Role } from '@prisma/client';
 
 import { DatabaseService } from '../configurations/database/database.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task-dto';
 
 @Injectable()
 export class TaskService {
@@ -36,5 +37,17 @@ export class TaskService {
     }
     await this.databaseService.task.delete({ where: { id: task.id } });
     return `Task id: ${task.id} has been deleted`;
+  }
+
+  async update(taskId: string, updateTaskDto: UpdateTaskDto) {
+    const task = await this.databaseService.task.findUnique({ where: { id: taskId } });
+    if (!task) {
+      throw new NotFoundException();
+    }
+    const updatedTask = await this.databaseService.task.update({
+      where: { id: taskId },
+      data: { ...updateTaskDto }
+    });
+    return updatedTask;
   }
 }
