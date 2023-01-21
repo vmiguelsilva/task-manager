@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Role } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 export const mockUser = async (role: Role, customPass = 'password') => {
   const salt = await bcrypt.genSalt();
