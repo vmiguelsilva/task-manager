@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
 import { DatabaseService } from '../configurations/database/database.service';
@@ -27,5 +27,14 @@ export class TaskService {
     return this.databaseService.task.findMany({
       where: { userId }
     });
+  }
+
+  async remove(taskId: string) {
+    const task = await this.databaseService.task.findUnique({ where: { id: taskId } });
+    if (!task) {
+      throw new NotFoundException();
+    }
+    await this.databaseService.task.delete({ where: { id: task.id } });
+    return `Task id: ${task.id} has been deleted`;
   }
 }
