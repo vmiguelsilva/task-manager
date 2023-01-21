@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 
@@ -7,7 +6,7 @@ import { HealthService } from './health/health.service';
 
 @Global()
 @Module({
-  imports: [HttpModule, TerminusModule],
+  imports: [TerminusModule],
   providers: [DatabaseService, HealthService],
   exports: [DatabaseService, HealthService]
 })

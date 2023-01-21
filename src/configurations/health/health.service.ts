@@ -1,28 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import {
-  HealthCheckError,
-  HealthCheckService,
-  HealthIndicator,
-  HttpHealthIndicator
-} from '@nestjs/terminus';
+import { HealthCheckError, HealthCheckService, HealthIndicator } from '@nestjs/terminus';
 
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class HealthService extends HealthIndicator {
-  constructor(
-    private health: HealthCheckService,
-    private http: HttpHealthIndicator,
-    private db: DatabaseService
-  ) {
+  constructor(private health: HealthCheckService, private db: DatabaseService) {
     super();
   }
 
   checkHealth() {
-    return this.health.check([
-      // () => this.http.pingCheck('Sword', 'https://swordhealth.com'),
-      () => this.databaseIsHealthy()
-    ]);
+    return this.health.check([() => this.databaseIsHealthy()]);
   }
 
   async databaseIsHealthy() {
