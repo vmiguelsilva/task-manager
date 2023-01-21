@@ -9,6 +9,9 @@ export class CreateUserDto {
   @IsString()
   name: string;
 
+  @IsString()
+  password: string;
+
   @IsEnum(() => Role)
   role: Role;
 }

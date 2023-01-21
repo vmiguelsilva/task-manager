@@ -8,6 +8,7 @@ export class User implements IUserMetadata {
   id: string;
   email: string;
   name: string;
+  password: string;
   role: Role;
   tasks: string[];
   createdAt: Date;

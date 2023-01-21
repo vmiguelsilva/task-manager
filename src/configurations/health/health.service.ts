@@ -20,7 +20,7 @@ export class HealthService extends HealthIndicator {
 
   checkHealth() {
     return this.health.check([
-      () => this.http.pingCheck('Sword', 'https://swordhealth.com/'),
+      // () => this.http.pingCheck('Sword', 'https://swordhealth.com'),
       () => this.databaseIsHealthy()
     ]);
   }
