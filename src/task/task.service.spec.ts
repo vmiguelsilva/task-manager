@@ -87,13 +87,45 @@ describe('TaskService', () => {
     expect(deleteTaskMock).toHaveBeenCalled();
   });
 
-  it("receive not found error if taskId doesn't found", async () => {
+  it("receive not found error if taskId doesn't found .remove", () => {
     const task = mockTask();
 
     jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(null);
 
     const promise = service.remove(task.id);
 
+    expect(promise).rejects.toThrowError();
+  });
+
+  it('update a task .update', async () => {
+    const task = mockTask();
+
+    const taskUpdated = {
+      ...task,
+      performedAt: new Date()
+    };
+
+    jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(task);
+    jest.spyOn(databaseService.task, 'update').mockResolvedValueOnce({
+      ...taskUpdated
+    });
+    const result = await service.update(task.id, taskUpdated);
+    expect(result.title).toEqual(task.title);
+    expect(result.performedAt).toBe(taskUpdated.performedAt);
+    expect(result.performedAt).not.toEqual(task.performedAt);
+  });
+
+  it("receive not found error if taskId doesn't found  .update", () => {
+    const task = mockTask();
+
+    const taskUpdated = {
+      ...task,
+      performedAt: new Date()
+    };
+
+    jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(null);
+
+    const promise = service.update(task.id, taskUpdated);
     expect(promise).rejects.toThrowError();
   });
 });
