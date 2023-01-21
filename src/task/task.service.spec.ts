@@ -62,7 +62,7 @@ describe('TaskService', () => {
   it('return all task if user is a Manager .findAll', async () => {
     const task = mockTask();
 
-    jest.spyOn(databaseService.task, 'findMany').mockResolvedValue([task]);
+    jest.spyOn(databaseService.task, 'findMany').mockResolvedValueOnce([task]);
     jest
       .spyOn(databaseService.user, 'findUnique')
       .mockResolvedValueOnce({ role: Role.MANAGER } as User);
@@ -72,5 +72,28 @@ describe('TaskService', () => {
     expect(tasks[0].title).toBe(task.title);
     expect(tasks[0].userId).toBe(task.userId);
     expect(tasks[0].summary).toBe(task.summary);
+  });
+
+  it('delete task by id .remove', async () => {
+    const task = mockTask();
+
+    jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(task);
+    const deleteTaskMock = jest
+      .spyOn(databaseService.task, 'delete')
+      .mockResolvedValueOnce({ ...task });
+
+    await service.remove(task.id);
+
+    expect(deleteTaskMock).toHaveBeenCalled();
+  });
+
+  it("receive not found error if taskId doesn't found", async () => {
+    const task = mockTask();
+
+    jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(null);
+
+    const promise = service.remove(task.id);
+
+    expect(promise).rejects.toThrowError();
   });
 });
