@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskService } from './task.service';
@@ -16,5 +16,10 @@ export class TaskController {
   findAll() {
     // TODO: get userid By JWT
     return this.taskService.findAll('1');
+  }
+
+  @Delete(':id')
+  delete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.taskService.remove(id);
   }
 }
