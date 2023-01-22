@@ -1,8 +1,10 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role, User } from '@prisma/client';
 
 import { mockTask } from '../../test/mocks';
 import { DatabaseService } from '../configurations/database/database.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { TaskService } from './task.service';
 
 describe('TaskService', () => {
@@ -11,7 +13,23 @@ describe('TaskService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TaskService, DatabaseService]
+      imports: [ConfigModule.forRoot()],
+      providers: [
+        TaskService,
+        DatabaseService,
+        {
+          provide: NotificationsService,
+          useValue: {
+            encodeWithId: jest.fn()
+          }
+        },
+        {
+          provide: 'kafka-registrar',
+          useValue: {
+            emit: jest.fn()
+          }
+        }
+      ]
     }).compile();
 
     service = module.get<TaskService>(TaskService);
