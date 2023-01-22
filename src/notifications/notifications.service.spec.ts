@@ -16,7 +16,7 @@ describe('NotificationsService', () => {
             options: {
               client: {
                 clientId: 'notification-test',
-                brokers: ['kafka:9092']
+                brokers: [`${process.env.KAFKA_HOST}:9092`]
               },
               producerOnlyMode: true,
               consumer: {

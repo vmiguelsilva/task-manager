@@ -4,6 +4,8 @@ import { ClientKafka, ClientsModule, Transport } from '@nestjs/microservices';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 
+console.log(`${process.env.KAFKA_HOST}:9092`);
+
 @Module({
   imports: [
     ClientsModule.register([
@@ -13,7 +15,7 @@ import { NotificationsService } from './notifications.service';
         options: {
           client: {
             clientId: 'notification',
-            brokers: ['kafka:9092']
+            brokers: [`${process.env.KAFKA_HOST}:9092`]
           },
           producerOnlyMode: true,
           consumer: {
