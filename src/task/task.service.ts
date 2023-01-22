@@ -2,12 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
 import { DatabaseService } from '../configurations/database/database.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 
 @Injectable()
 export class TaskService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly notificationService: NotificationsService
+  ) {}
   create(createTaskDto: CreateTaskDto) {
     return this.databaseService.task.create({
       data: {
@@ -49,5 +53,30 @@ export class TaskService {
       data: { ...updateTaskDto }
     });
     return updatedTask;
+  }
+
+  async perform(taskId: string) {
+    const task = await this.databaseService.task.findUnique({
+      where: { id: taskId }
+    });
+
+    if (!task) {
+      throw new NotFoundException(`Task not found, check if the taskId ${taskId} is valid`);
+    }
+
+    if (task.performedAt) {
+      return `Task ${taskId} already performed!`;
+    }
+
+    return this.databaseService.$transaction(async () => {
+      const updatedTask = await this.databaseService.task.update({
+        where: { id: taskId },
+        data: {
+          performedAt: new Date()
+        }
+      });
+
+      await this.notificationService.notifyAllManagers(updatedTask);
+    });
   }
 }
