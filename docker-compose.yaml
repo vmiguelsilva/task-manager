@@ -6,7 +6,7 @@ services:
     # TODO: create a script to abstract it
     entrypoint: .docker/docker-commands.sh
     env_file:
-     - .env
+      - .env
     # command: "sh -c 'npm install && npm run migrate:dev && npm run build && npm run start:prod'"
     ports:
       - 3000:3000
@@ -17,6 +17,7 @@ services:
     volumes:
       - .:/home/node/app
   db:
+    container_name: MYSQL
     image: mysql:8.0
     restart: always
     ports:
@@ -31,11 +32,13 @@ services:
       - ./.docker/dbdata:/var/lib/mysql
 
   zookeeper:
+    container_name: ZOOKEEPER
     image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
   kafka:
+    container_name: KAFKA
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
