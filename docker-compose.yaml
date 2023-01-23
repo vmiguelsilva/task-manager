@@ -4,7 +4,10 @@ services:
   app:
     build: .
     # TODO: create a script to abstract it
-    command: "sh -c 'npm install && npm run migrate:dev && npm run build && npm run start:prod'"
+    entrypoint: .docker/docker-commands.sh
+    env_file:
+     - .env
+    # command: "sh -c 'npm install && npm run migrate:dev && npm run build && npm run start:prod'"
     ports:
       - 3000:3000
     depends_on:
