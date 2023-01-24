@@ -10,6 +10,7 @@ import { TaskService } from './task.service';
 describe('TaskService', () => {
   let service: TaskService;
   let databaseService: DatabaseService;
+  let notificationsService: NotificationsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,13 +21,15 @@ describe('TaskService', () => {
         {
           provide: NotificationsService,
           useValue: {
-            encodeWithId: jest.fn()
+            encodeWithId: jest.fn(),
+            notifyAllManagers: jest.fn()
           }
         },
         {
           provide: 'kafka-registrar',
           useValue: {
-            emit: jest.fn()
+            emit: jest.fn(),
+            notifyAllManagers: jest.fn()
           }
         }
       ]
@@ -34,6 +37,7 @@ describe('TaskService', () => {
 
     service = module.get<TaskService>(TaskService);
     databaseService = module.get<DatabaseService>(DatabaseService);
+    notificationsService = module.get<NotificationsService>(NotificationsService);
   });
 
   it('should be defined', () => {
@@ -145,5 +149,23 @@ describe('TaskService', () => {
 
     const promise = service.update(task.id, taskUpdated);
     expect(promise).rejects.toThrowError();
+  });
+
+  it('perform task .perform', async () => {
+    const task = mockTask();
+
+    const taskUpdated = {
+      ...task,
+      performedAt: new Date()
+    };
+
+    jest.spyOn(databaseService.task, 'findUnique').mockResolvedValueOnce(task);
+    jest.spyOn(databaseService.task, 'update').mockResolvedValueOnce({
+      ...taskUpdated
+    });
+
+    await service.perform(task.id);
+
+    expect(notificationsService.notifyAllManagers).toHaveBeenCalled();
   });
 });

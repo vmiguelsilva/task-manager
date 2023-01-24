@@ -68,15 +68,13 @@ export class TaskService {
       return `Task ${taskId} already performed!`;
     }
 
-    return this.databaseService.$transaction(async () => {
-      const updatedTask = await this.databaseService.task.update({
-        where: { id: taskId },
-        data: {
-          performedAt: new Date()
-        }
-      });
-
-      await this.notificationService.notifyAllManagers(updatedTask);
+    const updatedTask = await this.databaseService.task.update({
+      where: { id: taskId },
+      data: {
+        performedAt: new Date()
+      }
     });
+
+    await this.notificationService.notifyAllManagers(updatedTask);
   }
 }
