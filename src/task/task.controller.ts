@@ -30,7 +30,7 @@ export class TaskController {
     return this.taskService.remove(id);
   }
 
-  @Patch()
+  @Patch(':id')
   @Roles(Role.MANAGER, Role.TECHNICIAN)
   performTask(@Param('id', ParseUUIDPipe) id: string) {
     return this.taskService.perform(id);
