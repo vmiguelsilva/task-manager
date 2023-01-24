@@ -51,4 +51,7 @@ awaitKafkaInitialization() {
 awaitKafkaInitialization
 log "KAFKA initialized"
 
+log "Seed"
+npm run seed:users
+
 log "Started"
