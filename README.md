@@ -1,73 +1,85 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Task Manager
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+It's software to account for maintenance tasks.
+We have two types of users that we can register to manage the tasks: Manager and Technician.
 
-## Description
+The Technician can perform, create, and update tasks that his own created.
+The Manager can see all tasks, delete them if necessary, and receive a simple notification when some technician user performs the task.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This application has two primary responsibilities:
 
-## Installation
+1. Manage users and authorization process using RBAC (Role-based access control) strategy.
+2. Create, Read, Update, and Delete tasks, and register tasks performed during the working day.
 
-```bash
-$ npm install
+## Technologies
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [NestJS](https://nestjs.com/)
+- [Prisma](https://prisma.io/)
+- [Docker](https://www.docker.com/)
+- [MySQL](https://www.mysql.com/)
+- [Kafka](https://kafka.apache.org/)
+
+## Prerequisites
+
+- [Node.js (LTS)](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+## Routes
+
+- GET: / - Health check
+- GET: /api - Swagger docs
+- GET: /task - Get all tasks. If you are Manager, you can see all tasks. If Technician, you can see just task that this Technician create.
+- POST: /task - Create a Task. Just Technician can use this route.
+- DELETE: /task/:id - Delete task. Just Manager can use this route.
+- PATCH: /task/:id - Perform task. Just Technician can use this route.
+- POST: /auth/login - Login an user.
+
+## Run project in the Development environment
+
+Before all, you must create a .env file based on the .env.example.
+After it, just run the command below. It will up all dependencies using docker-compose and start the project in watch mode of the NestJs project.
+
+```sh
+npm run start:dev
 ```
 
-## Running the app
+To run the project without watch mode, just run:
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```sh
+npm run start
 ```
+
+In both commands, we already run the command to seed two types of users, one Manager, and one Technician, with the following credentials:
+
+```json
+ {
+  "email": "technician@miguel.com",
+  "password": "sword-pass"
+ }
+ {
+  "email": "manager@miguel.com",
+  "password": "sword-pass"
+ }
+```
+
+If you want to change it, see the file `users/seed-users.ts.`
+
+Remember that all project dependencies need to be installed in your environment.
 
 ## Test
 
-```bash
+In the test environment, you have the commands below to run the test suite:
+
+```sh
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+All dependencies of the project are mocked in the test environment.
